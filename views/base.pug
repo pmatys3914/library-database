@@ -1,0 +1,23 @@
+doctype html
+html(lang='en')
+    head
+    title= title 
+    meta(charset='utf-8')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+body
+    div(class='wrapper')
+        div(class='sidebar')
+            h1= "Library Database"
+            ul
+                li
+                    a(href="/") Books! 
+        div(class='content')
+            h2= title
+            if messages
+                ul 
+                    for message in messages
+                        if message.msg
+                            li= message.msg
+                        else 
+                            li= message
+            block content

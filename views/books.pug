@@ -1,10 +1,7 @@
-html
-head
-  title= title
-body
-  h1= "Library Database"
-  h2= "Add New Entry"
-  form(action="/add" method="GET")
+extends base
+
+block content
+  form(action="/book/add" method="POST")
     div Title:
       input(type="text" name="title" placeholder="")
     div Author:
@@ -24,8 +21,8 @@ body
         td=item.id
         td=item.title
         td=item.author
-        td=item.date_added
+        td=moment(item.date_added).format("YYYY/MM/DD HH:mm")
         td
-          form(action="/remove" method="GET")
+          form(action="/book/remove" method="POST")
             input(type="hidden" name="removed" value=item.id)
-            input(type="submit" value="Remove" action="/remove")
+            input(type="submit" value="Remove")

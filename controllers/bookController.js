@@ -6,7 +6,7 @@ let con = config.connection;
 let moment = require("moment");
 
 let renderBooks = function (req, res, msg) {
-    con.query("SELECT * FROM books", function (err, rows, fields) {
+    con.query("SELECT * FROM Books", function (err, rows, fields) {
         if (err) throw err;
         res.render('books', { title: 'Books', items: rows, messages: msg})
     });
@@ -17,12 +17,12 @@ exports.index = function (req, res) {
 }
 
 exports.addBook = [
-    body('title', 'Title must not be empty').trim().isLength({ min: 1, max: 32 }).escape(),
-    body('author', 'Author must not be empty').trim().isLength({ min: 1, max: 32 }).escape(),
+    body('Title', 'Title must not be empty').trim().isLength({ min: 1, max: 32 }).escape(),
+    body('Author', 'Author must not be empty').trim().isLength({ min: 1, max: 32 }).escape(),
     (req, res, next) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
-            let sql = `INSERT INTO books (title, author, date_added) VALUES (?,?,?)`;
+            let sql = `INSERT INTO Books (title, author, date_added) VALUES (?,?,?)`;
             con.query(sql, [req.body.title, req.body.author, moment().format('YYYY-MM-DD HH:mm:ss')], function (err, result) {
                 if (err) throw err;
                 console.log("1 record added.");

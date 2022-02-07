@@ -1,2 +1,2 @@
 node_modules/
-config/databaseConfig.js
+config/mysqlData.js

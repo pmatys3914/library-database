@@ -3,16 +3,25 @@ extends base
 block content
   h3= "Add a book:"
   form(action="/books/add" method="POST")
-    div Title:
-      input(type="text" name="Title" placeholder="")
-    div Author:
-      select(name="Author")
-        each author in authors
-          option(value=author.AuthorID)=author.Name
-    div Year Released:
-      input(type="text" name="Year" placeholder="")
-    div Copies in Stock:
-      input(type="text" name="Copies" placeholder="")
+    table
+      tr
+        td Title
+        td
+          input(type="text" name="Title" placeholder="")
+      tr
+        td Author
+        td
+          select(name="Author")
+            each author in authors
+              option(value=author.AuthorID)=author.Name
+      tr
+        td Year Released
+        td
+          input(type="text" name="Year" placeholder="")
+      tr
+        td Copies in Stock
+        td
+          input(type="text" name="Copies" placeholder="")
     input(type="submit")
   h3= "All books:"
   table

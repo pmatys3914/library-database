@@ -3,10 +3,15 @@ extends base
 block content
   h3= "Add an author"
   form(action="/authors/add" method="POST")
-    div Name:
-      input(type="text" name="Name" placeholder="")
-    div Birth Year:
-      input(type="text" name="YearBorn" placeholder="")
+    table
+      tr
+        td Name
+        td 
+          input(type="text" name="Name" placeholder="")
+      tr
+        td Birth Year
+        td
+          input(type="text" name="YearBorn" placeholder="")
     input(type="submit")
   h3= "All authors"
   table

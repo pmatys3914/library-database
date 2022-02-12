@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+    head
+    title= title 
+    meta(charset='utf-8')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+body
+    div(class='wrapper')
+        div(class='sidebar')
+            h1= "Library Database"
+            ul
+                li Dashboard
+                li
+                    a(href="/") Books
+                li
+                    a(href="/authors/") Authors
+                li Users
+        div(class='content')
+            h2= title
+            if messages
+                ul 
+                    for message in messages
+                        if message.msg
+                            li= message.msg
+                        else 
+                            li= message
+            block content

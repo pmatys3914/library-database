@@ -1,0 +1,50 @@
+extends base
+
+block content
+  h3= "Add an author"
+  form(action="/authors/add" method="POST")
+    table
+      tr
+        td Name
+        td 
+          input(type="text" name="Name" placeholder="")
+      tr
+        td Birth Year
+        td
+          input(type="text" name="YearBorn" placeholder="")
+    input(type="submit")
+  h3= "All authors"
+  table
+    thead
+      tr
+        th ID
+        th Name 
+        th Year Born
+        th Edit
+        th Delete
+    each item in items
+      tr(id= "row" + item.AuthorID)
+        td=item.AuthorID
+        td=item.Name
+        td=item.YearBorn
+        td
+            input(type="button" onclick='edit(' + item.AuthorID + ', "' + item.Name + '", ' + item.YearBorn + ')' value="Edit")
+        td
+          form(action="/authors/remove" method="POST")
+            input(type="hidden" name="Removed" value=item.id)
+            input(type="submit" value="Remove")
+
+    script.
+        function edit(id, name, yearborn)
+        {
+            var tr = document.getElementById("row" + id);
+            tr.innerHTML= `
+                    <input type="hidden" form="` + id + `" name="AuthorID" value= ` + id +`>
+                    <td>` + id + `</td>
+                    <td><input type="text" form="` + id + `" name="Name" value="` + name + `"></td>
+                    <td><input type="text" form="` + id + `" name="YearBorn" value="` + yearborn + `"></td>
+                    <td><form action="/authors/edit" method="POST" id="` + id + `"><input type="submit"></form>
+                    <button onClick="window.location.reload();">Cancel</button>
+                    <td><input type="submit" value="Remove" disabled></td>
+            `
+        }

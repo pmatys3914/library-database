@@ -44,12 +44,12 @@ exports.removeAuthor = [
     (req, res, next) => {
         const errors = validationResult(req);
         if(errors.isEmpty()) {
-            let sql = 'DELETE FROM Authors WHERE AuthorID=?';
+            let sql = 'DELETE FROM Authors WHERE AuthorID = ?';
             con.query(sql, [req.body.Removed], function(err, result) {
                 if (err) throw err;
                 console.log("1 Author removed.");
             });
-            renderAuthors(req, res, ['Author ' + req.body.Name + ' added to the database.']);
+            renderAuthors(req, res, ['Author removed from the database.']);
         } else
         {
             renderAuthors(req, res, errors.array());

@@ -1,0 +1,20 @@
+extends base
+
+block content
+    h3= "Users"
+    form(action="/users/add")
+        input(type="submit" value="Register a New User")
+    table
+        thead
+            tr
+                th ID
+                th Name
+                th Register Date
+                th Manage User
+        each item in items
+            tr
+                td=item.UserID
+                td=item.Name
+                td=moment(item.RegisterDate).format("DD/MM/YYYY HH:mm")
+                td
+                    a(href="/users/" + item.UserID) Manage

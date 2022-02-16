@@ -31,7 +31,7 @@ block content
             input(type="button" onclick='edit(' + item.AuthorID + ', "' + item.Name + '", ' + item.YearBorn + ')' value="Edit")
         td
           form(action="/authors/remove" method="POST")
-            input(type="hidden" name="Removed" value=item.id)
+            input(type="hidden" name="Removed" value=item.AuthorID)
             input(type="submit" value="Remove")
 
     script.

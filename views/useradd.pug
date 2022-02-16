@@ -1,0 +1,10 @@
+extends base
+
+block content
+    form(action="/users/add" method="POST")
+        table 
+            tr 
+                td Name 
+                td 
+                    input(type="text" name="Name" placeholder="")
+        input(type="submit")

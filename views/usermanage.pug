@@ -1,0 +1,14 @@
+extends base
+
+block content
+    form(action="/users/edit" method="POST")
+        input(type="hidden" name="UserID" value=items[0].UserID)
+        table
+            tr
+                td Name
+                td
+                    input(type="text" name="Name" value=items[0].Name)
+        input(type="submit")
+    form(action="/users/remove" method="POST")
+        input(type="hidden" name="Removed" value=items[0].UserID)
+        input(type="submit" value="Remove User!")

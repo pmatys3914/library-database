@@ -1,9 +1,10 @@
-const { body, result, validationResult } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 
 let async = require("async");
 let config = require('../config/databaseConfig');
 let con = config.connection;
 let moment = require("moment");
+let utils = require("../utils/utils")
 
 // Helper function for rendering the page
 let renderAuthors = function (req, res, msg) {
@@ -13,14 +14,14 @@ let renderAuthors = function (req, res, msg) {
     });
 }
 
-// Render the plain author page
+// GET index of all authors
 exports.index = function(req, res) {
     renderAuthors(req, res, {});
 }
 
-// Attempt to add a new author to the database and render the page again.
+// POST validate and add author
 exports.addAuthor = [
-    body('Name', 'Name must not be empty').trim().isLength({min: 1, max: 256}).escape(),
+    utils.nameValidator,
     body('YearBorn', 'Birth Year must not be empty').trim(),
     (req, res, next) => {
         const errors = validationResult(req);
@@ -38,7 +39,7 @@ exports.addAuthor = [
     }
 ];
 
-// Attempt to remove the author from database by id and render the page again.
+// POST remove author by id
 exports.removeAuthor = [
     body('Removed', 'Invalid Author').isInt(),
     (req, res, next) => {
@@ -57,10 +58,10 @@ exports.removeAuthor = [
     }
 ]
 
-// Attempt to edit author data
+// POST validate and edit author
 exports.editAuthor = [
     body('AuthorID', 'Invalid Author').isInt(),
-    body('Name', 'Name must not be empty').trim().isLength({ min: 1, max: 256}).escape(),
+    utils.nameValidator,
     body('YearBorn', 'Birth Year must not be empty').trim().isLength({ min: 1}).escape(),
     (req, res, next) => {
         const errors = validationResult(req);

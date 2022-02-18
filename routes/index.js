@@ -15,6 +15,9 @@ router.post('/books/add', bookController.addBook);
 // Remove Book POST
 router.post('/books/remove', bookController.removeBook);
 
+// Edit Book POST
+router.post('/books/edit', bookController.editBook);
+
 // Authors Page
 router.get('/authors/', authorController.index);
 

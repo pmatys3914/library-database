@@ -43,7 +43,8 @@ block content
                     <td>` + id + `</td>
                     <td><input type="text" form="` + id + `" name="Name" value="` + name + `"></td>
                     <td><input type="text" form="` + id + `" name="YearBorn" value="` + yearborn + `"></td>
-                    <td><form action="/authors/edit" method="POST" id="` + id + `"><input type="submit"></form></td>
+                    <td><form action="/authors/edit" method="POST" id="` + id + `"><input type="submit"></form>
+                    <button onClick="window.location.reload();">Cancel</button>
                     <td><input type="submit" value="Remove" disabled></td>
             `
         }

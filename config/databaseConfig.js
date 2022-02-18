@@ -13,7 +13,7 @@ connection.connect(function(err) {
     }
 
     // Check if the database has all required tables. If not, create them in place of existing ones.
-    let testsql = "SELECT * FROM information_schema.tables WHERE table_schema = 'sql11469736' AND (table_name = 'Books' OR table_name = 'Authors')";
+    let testsql = "SELECT * FROM information_schema.tables WHERE table_schema = 'library' AND (table_name = 'Books' OR table_name = 'Authors')";
     let reqtables = 2;
     connection.query(testsql, function(err, rows) {
         if(err)
@@ -29,7 +29,7 @@ connection.connect(function(err) {
             }
             else
             {
-                console.log("Building database.");
+                console.log("Building database." + rows.length);
                 // Drop all the conflicting tables if they exists
                 let dropsql = "DROP TABLE IF EXISTS Authors, Books";
                 connection.query(dropsql, function(err) {

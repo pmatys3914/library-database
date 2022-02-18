@@ -10,7 +10,7 @@ block content
           input(type="text" name="Title" placeholder="")
       tr
         td Author
-        td
+        td(id="authorselect")
           select(name="Author")
             each author in authors
               option(value=author.AuthorID)=author.Name
@@ -36,15 +36,36 @@ block content
         th Edit
         th Delete
     each item in items
-      tr
+      tr(id= "row" + item.BookID)
         td=item.BookID
         td=item.Title
         td=item.AuthorName
         td=item.Year
         td=item.Copies
         td=item.CheckedOut
-        td="Edit"
+        td
+          input(type="button" value="Edit" onclick='edit(' + item.BookID + ', "' + item.Title + '", "' + item.AuthorName + '", ' + item.Year + ', ' + item.Copies + ', ' + item.CheckedOut + ')')
         td
           form(action="/books/remove" method="POST")
             input(type="hidden" name="Removed" value=item.id)
             input(type="submit" value="Remove")
+  script.
+    function edit(id, title, author, year, copies, checkedout)
+    {
+      var tr = document.getElementById("row" + id);
+      var authorselect = document.getElementById("authorselect");
+      tr.innerHTML=`
+              <input type="hidden" form=` + id + `" name="BookID" value= ` + id + `>
+              <td>` + id + `</td>
+              <td><input type="text" form="` + id + `" name="Title" value="` + title + `"></td>
+              <td>` + authorselect.innerHTML + `</td>
+              <td><input type="text" form="` + id + `" name="Year" value="` + year + `"></td>
+              <td><input type="text" form="` + id + `" name="Copies" value="` + copies + `"></td>
+              <td></td>
+              <td><form action="/books/edit" method="POST" id="` + id + `"><input type="submit"></form>
+              <button onClick="window.location.reload();">Cancel</button></td>
+              <td><input type="submit" value="Remove" disabled></td>
+      `
+
+
+    }

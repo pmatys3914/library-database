@@ -58,3 +58,24 @@ exports.removeBook = [
         }
     }
 ]
+
+exports.editBook = [
+    body('BookID', 'Invalid Book ID').isInt().isLength({ min: 1}).escape(),
+    body('Title', 'Title must not be empty').trim().isLength({ min: 1, max: 32 }).escape(),
+    body('Author', 'Author must not be empty').trim().isLength({ min: 1, max: 32 }).escape(),
+    body('Year', 'Release Year must not be empty').isLength({ min:1 }).trim(),
+    body('Copies', 'Number of copies must not be empty').isLength({ min:1 }).trim(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            let sql = `UPDATE Books SET Title= ? Author= ? Year= ? Copies= ? WHERE BookID= ?`;
+            con.query(sql, [req.body.Title, req.body.Author, req.body.Year, req.body.Copies, req.body.BookID], function (err, result) {
+                if (err) throw err;
+                console.log("1 book modified.");
+            });
+            renderBooks(req, res, ['Book ' + req.body.Title + ' updated successfully.']);
+        } else {
+            renderBooks(req, res, errors.array());
+        }
+    }
+];

@@ -23,3 +23,6 @@ router.post('/authors/add', authorController.addAuthor);
 
 // Remove Author POST
 router.post('/authors/remove', authorController.removeAuthor);
+
+// Edit Author POST
+router.post('/authors/edit', authorController.editAuthor);

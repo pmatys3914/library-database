@@ -18,7 +18,7 @@ block content
         th Edit
         th Delete
     each item in items
-      tr(id=item.AuthorID)
+      tr(id= "row" + item.AuthorID)
         td=item.AuthorID
         td=item.Name
         td=item.YearBorn
@@ -32,15 +32,13 @@ block content
     script.
         function edit(id, name, yearborn)
         {
-            var tr = document.getElementById(id);
+            var tr = document.getElementById("row" + id);
             tr.innerHTML= `
-                <form action="/authors/edit" method="POST">
-                    <input type="hidden" name="AuthorID" value= ` + id +`>
+                    <input type="hidden" form="` + id + `" name="AuthorID" value= ` + id +`>
                     <td>` + id + `</td>
-                    <td><input type="text" name="Name" value="` + name + `"></td>
-                    <td><input type="text" name="YearBorn" value="` + yearborn + `"></td>
-                    <td><input type="submit"></td>
+                    <td><input type="text" form="` + id + `" name="Name" value="` + name + `"></td>
+                    <td><input type="text" form="` + id + `" name="YearBorn" value="` + yearborn + `"></td>
+                    <td><form action="/authors/edit" method="POST" id="` + id + `"><input type="submit"></form></td>
                     <td><input type="submit" value="Remove" disabled></td>
-                </form>
             `
         }

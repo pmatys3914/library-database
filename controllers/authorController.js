@@ -61,12 +61,12 @@ exports.removeAuthor = [
 exports.editAuthor = [
     body('AuthorID', 'Invalid Author').isInt(),
     body('Name', 'Name must not be empty').trim().isLength({ min: 1, max: 256}).escape(),
-    body('YearBorn', 'Birth Year must not be empty').trim(),
+    body('YearBorn', 'Birth Year must not be empty').trim().isLength({ min: 1}).escape(),
     (req, res, next) => {
         const errors = validationResult(req);
         if(errors.isEmpty()) {
             let sql = 'UPDATE Authors SET Name= ?, YearBorn= ? WHERE AuthorID= ?';
-            con.query(sql, [req.body.Name, req.body,YearBorn, req.body.AuthorID], function(err, result) {
+            con.query(sql, [req.body.Name, req.body.YearBorn, req.body.AuthorID], function(err, result) {
                 if (err) throw err;
                 console.log("1 Author updated.");
             });

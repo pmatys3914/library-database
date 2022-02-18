@@ -43,22 +43,8 @@ exports.addAuthor = [
 
 // POST remove author by id
 exports.removeAuthor = [
-    body('Removed', 'Invalid Author ID')
-        .isInt()
-        .custom((value) => {
-            return new Promise((resolve, reject) => {
-                let sql = `SELECT * FROM Authors WHERE AuthorID = ?`;
-                db.query(sql, value, (err, rows) => {
-                    if (err) {
-                        reject(new Error(err));
-                    }
-                    if (rows.length == 0) {
-                        reject(new Error(`Invalid Author ID.`));
-                    }
-                    resolve(true);
-                });
-            })
-        })
+    utils.authorIDValidator,
+    body('AuthorID', 'Invalid Author ID')
         .custom((value) => {
             return new Promise((resolve, reject) => {
                 let sql = `SELECT BookID, Title FROM Books WHERE AuthorID = ?`;
@@ -77,7 +63,7 @@ exports.removeAuthor = [
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             let sql = 'DELETE FROM Authors WHERE AuthorID = ?';
-            db.query(sql, [req.body.Removed], function (err, result) {
+            db.query(sql, [req.body.AuthorID], function (err, result) {
                 if (err) throw err;
                 console.log("1 Author removed.");
             });
@@ -90,22 +76,7 @@ exports.removeAuthor = [
 
 // POST validate and edit author
 exports.editAuthor = [
-    body('AuthorID', 'Invalid Author ID')
-        .isInt()
-        .custom((value) => {
-            return new Promise((resolve, reject) => {
-                let sql = `SELECT * FROM Authors WHERE AuthorID = ?`;
-                db.query(sql, value, (err, rows) => {
-                    if (err) {
-                        reject(new Error(err));
-                    }
-                    else if (rows.length == 0) {
-                        reject(new Error(`Invalid Author ID.`));
-                    }
-                    resolve(true);
-                });
-            })
-        }),
+    utils.authorIDValidator,
     utils.nameValidator,
     body('YearBorn', 'Birth Year must not be empty').trim().isLength({ min: 1 }).escape(),
     (req, res, next) => {

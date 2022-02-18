@@ -10,5 +10,5 @@ block content
                     input(type="text" name="Name" value=items[0].Name)
         input(type="submit")
     form(action="/users/remove" method="POST")
-        input(type="hidden" name="Removed" value=items[0].UserID)
+        input(type="hidden" name="UserID" value=items[0].UserID)
         input(type="submit" value="Remove User!")

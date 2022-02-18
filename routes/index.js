@@ -48,3 +48,8 @@ router.post('/users/remove', userController.removeUserPost);
 
 // Edit User POST
 router.post('/users/edit', userController.editUserPost);
+
+// 404 Route
+router.get('*', function(req, res) {
+    res.send("404.");
+});

@@ -1,58 +1,51 @@
-const { body, result, validationResult } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 
-let async = require("async");
 let config = require("../config/databaseConfig");
-let con = config.connection;
+let db = config.connection;
 let moment = require("moment");
+let utils = require("../utils/utils");
 
 // Helper function rendering the page
 let renderUsers = function (req, res, msg) {
-    con.query("SELECT * FROM Users", function (err, rows) {
+    db.query("SELECT * FROM Users", function (err, rows) {
         if (err) throw err;
         res.render('users', { title: 'Users', items: rows, messages: msg })
     });
 }
 
-// Helper name validator
-let nameValidator =
-    body('Name')
-        .isString()
-        .withMessage("Invalid Name.")
-        .isLength({ min: 8 })
-        .withMessage("Name must be at least 8 characters long.")
-        .isLength({ max: 256 })
-        .withMessage("Name cannot be more than 256 characters long.")
-        // Only letters are allowed in names
-        .custom(value => {
-            if (!value.match(/^[a-zA-ZĄąĆćĘęŁłŃńÓóŚśŻżŹź -]+$/)) {
-                return Promise.reject("Name can only consist of letters.");
-            }
-            return true;
-        })
-        .escape();
 
+// GET index of all users
 exports.index = function (req, res) {
     renderUsers(req, res, {});
 }
 
+// GET add user page
 exports.addUser = function (req, res) {
     res.render('useradd', { title: 'Register a new User' });
 }
 
+// GET manage user page, requires its ID
 exports.manageUser = function (req, res) {
-    con.query("SELECT * FROM Users WHERE UserID = " + req.params.userid, function (err, rows) {
+    db.query("SELECT * FROM Users WHERE UserID = " + req.params.userid, function (err, rows) {
         if (err) throw err;
-        res.render('usermanage', { title: 'Manage ' + rows[0].Name, items: rows });
+        // User ID not found
+        if (rows.length == 0) {
+            res.send('404');
+        }
+        else {
+            res.render('usermanage', { title: 'Manage ' + rows[0].Name, items: rows });
+        }
     });
 }
 
+// POST validate and add user
 exports.addUserPost = [
-    nameValidator,
+    utils.nameValidator,
     (req, res, next) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             let sql = `INSERT INTO Users (Name, RegisterDate) VALUES (?, ?)`;
-            con.query(sql, [req.body.Name, moment().format("YYYY-MM-DD HH:mm:ss")], function (err) {
+            db.query(sql, [req.body.Name, moment().format("YYYY-MM-DD HH:mm:ss")], function (err) {
                 if (err) throw err;
                 console.log("1 User registered.");
             });
@@ -63,13 +56,14 @@ exports.addUserPost = [
     }
 ]
 
+// POST remove user by ID
 exports.removeUserPost = [
-    body('Removed')
+    body('Removed', 'Invalid User ID')
         .isInt()
         .custom((value, { req }) => {
             return new Promise((resolve, reject) => {
                 let sql = `SELECT * FROM Users WHERE UserID = ?`;
-                con.query(sql, value, (err, rows) => {
+                db.query(sql, value, (err, rows) => {
                     if (err) {
                         reject(new Error(err));
                     }
@@ -85,7 +79,7 @@ exports.removeUserPost = [
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             let sql = `DELETE FROM Users WHERE UserID = ?`;
-            con.query(sql, [req.body.Removed], function (err) {
+            db.query(sql, [req.body.Removed], function (err) {
                 if (err) throw err;
                 console.log("1 User removed.");
             });
@@ -96,13 +90,14 @@ exports.removeUserPost = [
     }
 ]
 
+// POST validate and edit user by ID
 exports.editUserPost = [
-    nameValidator,
+    utils.nameValidator,
     (req, res, next) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             let sql = `UPDATE Users SET Name = ? WHERE UserID = ?`;
-            con.query(sql, [req.body.Name, req.body.UserID], function (err) {
+            db.query(sql, [req.body.Name, req.body.UserID], function (err) {
                 if (err) throw err;
                 console.log("1 User updated.");
             })

@@ -4,9 +4,9 @@ block content
   h3= "Add an author"
   form(action="/authors/add" method="POST")
     div Name:
-      input(type="text" name="name" placeholder="")
+      input(type="text" name="Name" placeholder="")
     div Birth Year:
-      input(type="text" name="yearBorn" placeholder="")
+      input(type="text" name="YearBorn" placeholder="")
     input(type="submit")
   h3= "All authors"
   table
@@ -18,12 +18,29 @@ block content
         th Edit
         th Delete
     each item in items
-      tr
+      tr(id=item.AuthorID)
         td=item.AuthorID
         td=item.Name
         td=item.YearBorn
-        td="Edit"
+        td
+            input(type="button" onclick='edit(' + item.AuthorID + ', "' + item.Name + '", ' + item.YearBorn + ')' value="Edit")
         td
           form(action="/authors/remove" method="POST")
-            input(type="hidden" name="removed" value=item.id)
+            input(type="hidden" name="Removed" value=item.id)
             input(type="submit" value="Remove")
+
+    script.
+        function edit(id, name, yearborn)
+        {
+            var tr = document.getElementById(id);
+            tr.innerHTML= `
+                <form action="/authors/edit" method="POST">
+                    <input type="hidden" name="AuthorID" value= ` + id +`>
+                    <td>` + id + `</td>
+                    <td><input type="text" name="Name" value="` + name + `"></td>
+                    <td><input type="text" name="YearBorn" value="` + yearborn + `"></td>
+                    <td><input type="submit"></td>
+                    <td><input type="submit" value="Remove" disabled></td>
+                </form>
+            `
+        }

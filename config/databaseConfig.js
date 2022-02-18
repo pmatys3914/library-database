@@ -41,7 +41,7 @@ connection.connect(function(err) {
                     // Authors
                     let authorssql =`
                     CREATE TABLE Authors (
-                        AuthorID int NOT NULL,
+                        AuthorID int NOT NULL AUTO_INCREMENT,
                         Name varchar(255) NOT NULL,
                         YearBorn int NOT NULL,
                         PRIMARY KEY(AuthorID)
@@ -52,7 +52,7 @@ connection.connect(function(err) {
                     // Books
                     let bookssql = `
                     CREATE TABLE Books (
-                        BookID int NOT NULL,
+                        BookID int NOT NULL AUTO_INCREMENT,
                         Title varchar(255) NOT NULL,
                         AuthorID int NOT NULL,
                         Year int NOT NULL,

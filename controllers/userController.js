@@ -60,7 +60,7 @@ exports.addUserPost = [
 exports.removeUserPost = [
     body('Removed', 'Invalid User ID')
         .isInt()
-        .custom((value, { req }) => {
+        .custom((value) => {
             return new Promise((resolve, reject) => {
                 let sql = `SELECT * FROM Users WHERE UserID = ?`;
                 db.query(sql, value, (err, rows) => {
@@ -70,7 +70,6 @@ exports.removeUserPost = [
                     if (rows.length == 0) {
                         reject(new Error(`Invalid User ID.`));
                     }
-
                     resolve(true)
                 });
             })

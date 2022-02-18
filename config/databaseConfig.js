@@ -13,12 +13,11 @@ connection.connect(function(err) {
     }
 
     // Check if the database has all required tables. If not, create them in place of existing ones.
-    let reqtables = ["Books", "Authors", "BookInstances"];
+    let reqtables = ["Books", "Authors", "BookInstances", "Users"];
     let testsql = "SELECT * FROM information_schema.tables WHERE table_schema = 'library' AND (";
     reqtables.forEach(e => testsql += ( "table_name = \'" + e + "\' OR "));
     testsql = testsql.slice(0, -3);
     testsql += ")";
-    console.log(testsql);
 
     connection.query(testsql, function(err, rows) {
         if(err)
@@ -49,18 +48,19 @@ connection.connect(function(err) {
                     let authorssql =`
                     CREATE TABLE Authors (
                         AuthorID int NOT NULL AUTO_INCREMENT,
-                        Name varchar(255) NOT NULL,
+                        Name varchar(256) NOT NULL,
                         YearBorn year NOT NULL,
                         PRIMARY KEY(AuthorID)
                     )`;
                     connection.query(authorssql, function(err) {
                         if(err) throw err;
                     });
+
                     // Books
                     let bookssql = `
                     CREATE TABLE Books (
                         BookID int NOT NULL AUTO_INCREMENT,
-                        Title varchar(255) NOT NULL,
+                        Title varchar(256) NOT NULL,
                         AuthorID int NOT NULL,
                         Year int NOT NULL,
                         Copies int NOT NULL,
@@ -71,18 +71,44 @@ connection.connect(function(err) {
                     connection.query(bookssql, function(err) {
                         if(err) throw err;
                     });
+
                     // Book Instances
-                    let bookinstancesql = `
+                    let bookinstancessql = `
                     CREATE TABLE BookInstances (
                         BookInstanceID int NOT NULL AUTO_INCREMENT,
                         BookID int NOT NULL,
-                        AcquisitionDate timestamp NOT NULL,
+                        AcquisitionTimestamp timestamp NOT NULL,
                         PRIMARY KEY (BookInstanceID),
                         FOREIGN KEY (BookID) REFERENCES Books(BookID)
                     )`;
-                    connection.query(bookinstancesql, function(err) {
+                    connection.query(bookinstancessql, function(err) {
                         if(err) throw err;
                     });
+
+                    // Users
+                    let userssql = `
+                    CREATE TABLE Users (
+                        UserID int NOT NULL AUTO_INCREMENT,
+                        Name varchar(256) NOT NULL,
+                        RegisterDate timestamp NOT NULL,
+                        PRIMARY KEY (UserID)
+                    )`;
+                    connection.query(userssql, function(err) {
+                        if(err) throw err;
+                    });
+
+                    // Checkouts
+                    let checkoutssql = `
+                    CREATE TABLE Checkouts (
+                        CheckoutID int NOT NULL AUTO_INCREMENT,
+                        UserID int NOT NULL,
+                        BookINstanceID int NOT NULL,
+                        CheckoutTimestamp timestamp NOT NULL,
+                        DeadlineTimestamp timestamp NOT NULL,
+                        PRIMARY KEY (CheckoutID),
+                        FOREIGN KEY (UserID) REFERENCES Users(UserID),
+                        FOREIGN KEY (BookInstanceID) REFERENCES BookInstances(BookInstanceID)
+                    )`;
                 })
             }
         }

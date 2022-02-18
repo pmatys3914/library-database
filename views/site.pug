@@ -1,0 +1,31 @@
+html
+head
+  title= title
+body
+  h1= "Library Database"
+  h2= "Add New Entry"
+  form(action="/add" method="GET")
+    div Title:
+      input(type="text" name="title" placeholder="")
+    div Author:
+      input(type="text" name="author" placeholder="")
+    input(type="submit")
+  h2= "Books"
+  table
+    thead
+      tr
+        th ID
+        th Title 
+        th Author
+        th Date Added
+        th Delete
+    each item in items
+      tr
+        td=item.id
+        td=item.title
+        td=item.author
+        td=item.date_added
+        td
+          form(action="/remove" method="GET")
+            input(type="hidden" name="removed" value=item.id)
+            input(type="submit" value="Remove" action="/remove")

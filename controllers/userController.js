@@ -58,27 +58,12 @@ exports.addUserPost = [
 
 // POST remove user by ID
 exports.removeUserPost = [
-    body('Removed', 'Invalid User ID')
-        .isInt()
-        .custom((value) => {
-            return new Promise((resolve, reject) => {
-                let sql = `SELECT * FROM Users WHERE UserID = ?`;
-                db.query(sql, value, (err, rows) => {
-                    if (err) {
-                        reject(new Error(err));
-                    }
-                    if (rows.length == 0) {
-                        reject(new Error(`Invalid User ID.`));
-                    }
-                    resolve(true)
-                });
-            })
-        }),
+    utils.userIDValidator,
     (req, res, next) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             let sql = `DELETE FROM Users WHERE UserID = ?`;
-            db.query(sql, [req.body.Removed], function (err) {
+            db.query(sql, [req.body.UserID], function (err) {
                 if (err) throw err;
                 console.log("1 User removed.");
             });
@@ -91,6 +76,7 @@ exports.removeUserPost = [
 
 // POST validate and edit user by ID
 exports.editUserPost = [
+    utils.userIDValidator,
     utils.nameValidator,
     (req, res, next) => {
         const errors = validationResult(req);

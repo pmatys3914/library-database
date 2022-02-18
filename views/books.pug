@@ -11,7 +11,7 @@ block content
       tr
         td Author
         td(id="authorselect")
-          select(name="Author")
+          select(name="AuthorID")
             each author in authors
               option(value=author.AuthorID)=author.Name
       tr
@@ -47,7 +47,7 @@ block content
           input(type="button" value="Edit" onclick='edit(' + item.BookID + ', "' + item.Title + '", "' + item.AuthorName + '", ' + item.Year + ', ' + item.Copies + ', ' + item.CheckedOut + ')')
         td
           form(action="/books/remove" method="POST")
-            input(type="hidden" name="Removed" value=item.id)
+            input(type="hidden" name="BookID" value=item.id)
             input(type="submit" value="Remove")
   script.
     function edit(id, title, author, year, copies, checkedout)

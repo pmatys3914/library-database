@@ -5,6 +5,7 @@ module.exports = router;
 // Controllers
 let bookController = require('../controllers/bookController');
 let authorController = require('../controllers/authorController');
+let userController = require('../controllers/userController')
 
 // Book Page
 router.get('/', bookController.index);
@@ -29,3 +30,26 @@ router.post('/authors/remove', authorController.removeAuthor);
 
 // Edit Author POST
 router.post('/authors/edit', authorController.editAuthor);
+
+// Users Page
+router.get('/users/', userController.index);
+
+// Add User Page
+router.get('/users/add/', userController.addUser);
+
+// Manage User Page
+router.get('/users/:userid/', userController.manageUser)
+
+// Add User POST
+router.post('/users/add', userController.addUserPost);
+
+// Remove User POST
+router.post('/users/remove', userController.removeUserPost);
+
+// Edit User POST
+router.post('/users/edit', userController.editUserPost);
+
+// 404 Route
+router.get('*', function(req, res) {
+    res.send("404.");
+});

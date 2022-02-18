@@ -18,10 +18,6 @@ block content
         td Year Released
         td
           input(type="text" name="Year" placeholder="")
-      tr
-        td Copies in Stock
-        td
-          input(type="text" name="Copies" placeholder="")
     input(type="submit")
   h3= "All books:"
   table
@@ -31,8 +27,7 @@ block content
         th Title 
         th Author
         th Release Year
-        th Copies Total
-        th Copies Checked Out
+        th Copies Availaible
         th Edit
         th Delete
     each item in items
@@ -41,8 +36,8 @@ block content
         td=item.Title
         td=item.AuthorName
         td=item.Year
-        td=item.Copies
-        td=item.CheckedOut
+        td
+          a(href="/books/" + item.BookID + "/")= item.CopiesAvailaible + "/" + item.CopiesTotal
         td
           input(type="button" value="Edit" onclick='edit(' + item.BookID + ', "' + item.Title + '", "' + item.AuthorName + '", ' + item.Year + ', ' + item.Copies + ', ' + item.CheckedOut + ')')
         td

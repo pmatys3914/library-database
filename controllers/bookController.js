@@ -8,14 +8,27 @@ let utils = require("../utils/utils")
 
 // Helper function rendering the book index
 let renderBooks = function (req, res, msg) {
-    db.query("SELECT * FROM Books", function (err, rows) {
+    db.query("SELECT * FROM Books", function (err, books) {
         if (err) throw err;
         db.query("SELECT * FROM Authors", function (err, authors) {
             if (err) throw err;
-            rows.forEach(row => {
-                row.AuthorName = authors.find(e => e.AuthorID == row.AuthorID).Name;
+            books.forEach(book => {
+                book.AuthorName = authors.find(e => e.AuthorID == book.AuthorID).Name;
             });
-            res.render('books', { title: 'Books', items: rows, authors: authors, messages: msg })
+            books.forEach(book => {
+                book.CopiesAvailaible = 0;
+                book.CopiesTotal = 0;
+                db.query("SELECT * FROM BookInstances WHERE BookID = ?", book.BookID, function (err, result) {
+                    if (err) throw err;
+                    result.forEach(instance => {
+                        if(!instance.CheckedOut) {
+                            book.CopiesAvailaible++;
+                        }
+                        book.CopiesTotal++;
+                    })
+                })
+            })
+            res.render('books', { title: 'Books', items: books, authors: authors, messages: msg })
         })
     });
 }
@@ -23,6 +36,23 @@ let renderBooks = function (req, res, msg) {
 // GET index of books
 exports.index = function (req, res) {
     renderBooks(req, res, {});
+}
+
+// GET Book info
+exports.bookInfo = function (req, res) {
+    let booksql = "SELECT * FROM Books WHERE BookID = ?";
+    db.query(booksql, req.params.bookid, (err, book) => {
+        if(err) throw err;
+        let instancesql = "SELECT * FROM BookInstances WHERE BookID = ?";
+        db.query(instancesql, req.params.bookid, (err, instances) => {
+            if(err) throw err;
+            let authorssql = "SELECT AuthorID, Name FROM Authors";
+            db.query(authorssql, (err, authors) => {
+                if(err) throw err;
+                res.render("bookmanage", {title: "Manage " + book[0].Title, book: book[0], instances: instances, authors: authors });
+            })
+        })
+    })
 }
 
 // POST Validate and add a new book
@@ -39,8 +69,8 @@ exports.addBook = [
     (req, res, next) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
-            let sql = `INSERT INTO Books (Title, AuthorID, Year, Copies, CheckedOut) VALUES (?, ?, ?, 0, 0)`;
-            db.query(sql, [req.body.Title, req.body.AuthorID, req.body.Year, req.body.Copies], function (err, result) {
+            let sql = `INSERT INTO Books (Title, AuthorID, Year) VALUES (?, ?, ?)`;
+            db.query(sql, [req.body.Title, req.body.AuthorID, req.body.Year], function (err, result) {
                 if (err) throw err;
                 console.log("1 record added.");
             });
@@ -56,7 +86,7 @@ exports.removeBook = [
     (req, res, next) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
-            let sql = 'DELETE FROM books WHERE id=?';
+            let sql = 'DELETE FROM books WHERE id= ?';
             db.query(sql, [req.body.BookID], function (err, result) {
                 if (err) throw err;
                 console.log("1 record removed.");

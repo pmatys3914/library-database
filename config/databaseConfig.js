@@ -13,9 +13,9 @@ connection.connect(function(err) {
     }
 
     // Check if the database has all required tables. If not, create them in place of existing ones.
-    let reqtables = ["Books", "Authors", "BookInstances", "Users"];
+    let reqtables = ["Books", "Authors", "BookInstances", "Users", "Checkouts"];
     let testsql = "SELECT * FROM information_schema.tables WHERE table_schema = 'library' AND (";
-    reqtables.forEach(e => testsql += ( "table_name = \'" + e + "\' OR "));
+    reqtables.forEach(e => testsql += ( "table_name = '" + e + "' OR "));
     testsql = testsql.slice(0, -3);
     testsql += ")";
 
@@ -63,8 +63,6 @@ connection.connect(function(err) {
                         Title varchar(256) NOT NULL,
                         AuthorID int NOT NULL,
                         Year int NOT NULL,
-                        Copies int NOT NULL,
-                        CheckedOut int NOT NULL,
                         PRIMARY KEY (BookID),
                         FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID)
                     )`;
@@ -77,6 +75,7 @@ connection.connect(function(err) {
                     CREATE TABLE BookInstances (
                         BookInstanceID int NOT NULL AUTO_INCREMENT,
                         BookID int NOT NULL,
+                        CheckedOut bool NOT NULL,
                         AcquisitionTimestamp timestamp NOT NULL,
                         PRIMARY KEY (BookInstanceID),
                         FOREIGN KEY (BookID) REFERENCES Books(BookID)
@@ -109,6 +108,9 @@ connection.connect(function(err) {
                         FOREIGN KEY (UserID) REFERENCES Users(UserID),
                         FOREIGN KEY (BookInstanceID) REFERENCES BookInstances(BookInstanceID)
                     )`;
+                    connection.query(checkoutssql, function(err) {
+                        if(err) throw err;
+                    })
                 })
             }
         }
@@ -116,5 +118,5 @@ connection.connect(function(err) {
 });
 
 module.exports = {
-    connection : connection
+    connection: connection
 }

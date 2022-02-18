@@ -1,0 +1,40 @@
+extends base
+
+block content 
+    form(action="books/edit" method="POST")
+        input(type="hidden" name="BookID" value=book.BookID)
+        table
+            tr
+                td Title
+                td
+                    input(type="text" name="Title" value= book.Title)
+            tr
+                td Author
+                td
+                    select(name="AuthorID")
+                        each author in authors
+                            option(value=author.AuthorID)= author.Name
+            tr
+                td Year Released
+                td
+                    input(type="text" name="Year" value=book.Year)
+        input(type="submit")
+    form(action="/books/remove" method="POST")
+        input(type="hidden" name="BookID" value=book.BookID)
+        input(type="submit" value="Remove")
+    h3= "Book Instances"
+    a(href="/books/"+book.BookID+"/instance/new")= "Add a new instance"
+    table
+        thead
+            tr
+                th ID
+                th Status
+                th History
+        each instance in instances
+            tr(id= "row" + instance.InstanceID)
+                td= instance.InstanceID
+                td= instance.CheckedOut
+                td
+                    a(href="/books/instance/" + instance.InstanceID)
+
+

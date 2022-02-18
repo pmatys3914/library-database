@@ -7,8 +7,11 @@ let bookController = require('../controllers/bookController');
 let authorController = require('../controllers/authorController');
 let userController = require('../controllers/userController')
 
-// Book Page
+// Book Index Page
 router.get('/', bookController.index);
+
+// Book Page
+router.get('/books/:bookid', bookController.bookInfo);
 
 // Add Book POST
 router.post('/books/add', bookController.addBook);

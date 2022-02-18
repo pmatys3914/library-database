@@ -1,27 +1,33 @@
 extends base
 
 block content
+  h3= "Add a book:"
   form(action="/book/add" method="POST")
     div Title:
       input(type="text" name="title" placeholder="")
     div Author:
       input(type="text" name="author" placeholder="")
     input(type="submit")
-  h2= "Books"
+  h3= "All books:"
   table
     thead
       tr
         th ID
         th Title 
         th Author
-        th Date Added
+        th Release Year
+        th Copies Total
+        th Copies Checked Out
         th Delete
     each item in items
       tr
-        td=item.id
-        td=item.title
-        td=item.author
-        td=moment(item.date_added).format("YYYY/MM/DD HH:mm")
+        td=item.BookID
+        td=item.Title
+        td=item.Author
+        td=item.Year
+        td=item.Copies
+        td=item.CheckedOut
+        td="Edit"
         td
           form(action="/book/remove" method="POST")
             input(type="hidden" name="removed" value=item.id)
